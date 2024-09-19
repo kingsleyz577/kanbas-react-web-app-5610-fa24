@@ -93,8 +93,8 @@ export default function AssignmentEditor() {
   
         <hr />
   
+        <button>Start</button>
         <button>Cancel</button>
-        <button>Save</button>
       </div>
     );
   }
