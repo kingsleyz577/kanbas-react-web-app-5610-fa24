@@ -8,8 +8,17 @@ export default function TOC() {
       <li><Link id="wd-a2" to="/Labs/Lab2">Lab 2</Link></li>
       <li><Link id="wd-a3" to="/Labs/Lab3">Lab 3</Link></li>
       <li><Link id="wd-k"  to="/Kanbas">Kanbas</Link></li>
+      {/* GitHub Link */}
+      <li>
+        <a 
+          href="https://github.com/kingsleyz577" 
+          id="wd-github" 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          Zi' GitHub Repository
+        </a>
+      </li>
     </ul>
   );
 }
-
-  
