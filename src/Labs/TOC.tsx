@@ -11,12 +11,12 @@ export default function TOC() {
       {/* GitHub Link */}
       <li>
         <a 
-          href="https://github.com/kingsleyz577" 
+          href="https://github.com/kingsleyz577/kanbas-react-web-app-5610-fa24" 
           id="wd-github" 
           target="_blank" 
           rel="noopener noreferrer"
         >
-          Zi' GitHub Repository
+          Zi's GitHub Repository
         </a>
       </li>
     </ul>
