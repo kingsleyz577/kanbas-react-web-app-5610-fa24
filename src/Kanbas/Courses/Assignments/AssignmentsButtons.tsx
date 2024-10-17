@@ -3,7 +3,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 
 export default function AssignmentsButtons() {
   return (
-    <div className="d-flex justify-content-center align-items-center gap-2">
+    <div className="d-flex justify-content-end align-items-center gap-2">
       <div className="border rounded-pill px-4 py-1 fs-5 text-dark">
         40% of total
       </div>
