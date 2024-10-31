@@ -11,7 +11,8 @@ export default function Labs() {
   return (
     <Provider store={store}>
       <div className="m-4">
-        <h2>Zi Wang, Section 2</h2>
+        <h2>Zi Wang</h2>
+        <h2>Section 2</h2>
         <h1>Labs</h1>
         <TOC />
         <Routes>
