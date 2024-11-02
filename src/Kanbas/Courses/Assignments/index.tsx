@@ -1,95 +1,116 @@
-import { BsGripVertical, BsPencilSquare } from "react-icons/bs";
-import { FiSearch } from "react-icons/fi";
-import { FaPlus } from "react-icons/fa";
-import AssignmentsButtons from "./AssignmentsButtons";
-import LessonControlButtons from "../Modules/LessonControlButtons";
-import { useParams } from "react-router";
-import * as db from "../../Database";
+import { BsGripVertical } from "react-icons/bs";
+import { MdOutlineAssignment } from "react-icons/md";
+import AssignmentControlButtons from "./AssignmentControlButtons";
+import AssignmentsControls from "./AssignmentsControls";
+import AssignmentGroupControlButtons from "./AssignmentGroupControlButtons";
+import { Navigate, Route, Routes, useParams, useLocation } from "react-router";
+import React, { useState } from "react";
+import { addAssignment, updateAssignment, deleteAssignment } from "./reducer";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const [currentAssignmentId, setId] = useState("");
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  const dispatch = useDispatch();
+
   return (
-    <div id="wd-assignments" className="m-5">
-      <div id="wd-search-assignment-box" className="row">
-        <div className="col-8">
-          <span>
-            <FiSearch />
-          </span>
-          <input
-            id="wd-search-assignment"
-            placeholder="Search..."
-            className="form-control"
-            type="text"
-            style={{ width: "500px" }}
-          />
-        </div>
-        <div className="col-4">
-          <button
-            id="wd-add-assignment"
-            className="btn btn-lg btn-danger me-1 float-end"
-          >
-            <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-            Assignment
-          </button>
-          <button
-            id="wd-add-assignment-group"
-            className="btn btn-lg btn-secondary me-1 float-end"
-          >
-            <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-            Group
-          </button>
-        </div>
+    <div id="wd-assignments" className="me-2">
+      <div className="row align-items-center mb-4">
+        <AssignmentsControls />
       </div>
-      <br />
-      <br />
-      <ul className="list-group rounded-0">
-        <li className="list-group-item p-0 fs-5 border-gray">
-          <div className="wd-assignments-title p-3 ps-2 bg-secondary d-flex justify-content-between align-items-center">
-            <div>
-              <BsGripVertical className="me-2 fs-3" />
-              ASSIGNMENTS
-            </div>
-            <AssignmentsButtons />
+      <ul className="list-group rounded-0 d-block">
+        <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
+          <div className="wd-title p-3 ps-2 bg-secondary">
+            <BsGripVertical className="me-2 fs-3" />
+            ASSIGNMENTS
+            <AssignmentGroupControlButtons />
           </div>
-        </li>
-        <ul id="wd-assignment-list" className="list-group rounded-0">
-          {assignments
-            .filter((assignment) => assignment.course === cid)
-            .map((assignment) => (
-              <li
-                key={assignment._id}
-                className="wd-assignment-list-item list-group-item p-3 ps-1 fs-5"
-              >
-                <div className="row align-items-center">
-                  <div className="col-1">
+          <ul id="wd-assignment-list" className="list-group rounded-0">
+            {assignments
+              .filter((assignment: any) => assignment.course === cid)
+              .map((assignment: any) => (
+                <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center justify-content-between">
+                  <div className="d-flex align-items-center">
                     <BsGripVertical className="me-2 fs-3" />
-                    <BsPencilSquare className="text-success" />
+                    <MdOutlineAssignment className="me-3 fs-5 text-success" />
+                    <div className="d-flex flex-column">
+                      {currentUser.role === "FACULTY" && (
+                        <a
+                          className="wd-assignment-link wd-title"
+                          href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                        >
+                          {assignment.title}
+                        </a>
+                      )}
+                      {currentUser.role !== "FACULTY" && (
+                        <span className="wd-title">{assignment.title}</span>
+                      )}
+                      <div className="wd-assignment-list-details">
+                        <div>
+                          {assignment.modules && (
+                            <span className="text-danger">
+                              {assignment.modules} &nbsp;&nbsp;| &nbsp;&nbsp;
+                            </span>
+                          )}
+                          {assignment.available_date && (
+                            <span>
+                              <b>Not available until </b>
+                              {new Date(
+                                assignment.available_date
+                              ).toLocaleDateString("en-US", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })}
+                              &nbsp;&nbsp;|&nbsp;&nbsp;
+                            </span>
+                          )}
+                        </div>
+                        {assignment.due_date && (
+                          <span>
+                            <b>Due </b>
+                            {new Date(assignment.due_date).toLocaleDateString(
+                              "en-US",
+                              {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              }
+                            )}
+                            &nbsp;&nbsp;| &nbsp;&nbsp;
+                          </span>
+                        )}
+                        {assignment.points && (
+                          <span>{assignment.points} pts</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="col-10">
-                    <a
-                      className="wd-assignment-link text-decoration-none text-dark"
-                      href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
-                    >
-                      {assignment.title}
-                    </a>
-                    <br />
-                    <span className="fs-6 text-wrap">
-                      <span className="text-danger">Multiple Modules</span>
-                      <span className="custom-gray1">
-                        {" "}| <strong>Not available until</strong> {" "}
-                        {assignment.availableDate}  | <strong>Due</strong> {" "}
-                        {assignment.dueDate}  | {assignment.points} pts
-                      </span>
-                    </span>
+                  <div>
+                    <AssignmentControlButtons
+                      assignmentId={assignment._id}
+                      currentAssignmentId={currentAssignmentId}
+                      setId={setId}
+                      deleteAssignment={(assignmentId) => {
+                        dispatch(deleteAssignment(assignmentId));
+                      }}
+                    />
                   </div>
-                  <div className="col-1">
-                    <LessonControlButtons />
-                  </div>
-                </div>
-              </li>
-            ))}
-        </ul>
+                </li>
+              ))}
+          </ul>
+        </li>
       </ul>
     </div>
   );

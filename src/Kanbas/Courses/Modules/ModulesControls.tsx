@@ -1,81 +1,122 @@
 import { FaPlus } from "react-icons/fa6";
-import GreenCheckmark from "./GreenCheckmark";
+import { FaCheckCircle, FaBan } from "react-icons/fa";
 
-export default function ModulesControls() {
+import ModuleEditor from "./ModuleEditor";
+import { useSelector } from "react-redux";
+import ProtectedRouteRole from "../ProtectedRouteRole";
+export default function ModulesControls({
+  moduleName,
+  setModuleName,
+  addModule,
+}: {
+  moduleName: string;
+  setModuleName: (title: string) => void;
+  addModule: () => void;
+}) {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
   return (
-    <div id="wd-modules-controls" className="text-nowrap">
-      <button
-        id="wd-add-module-btn"
-        className="btn btn-lg btn-danger me-1 float-end"
-      >
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-        Module
-      </button>
-      <div className="dropdown d-inline me-1 float-end">
+    <div id="wd-modules-controls" className="text-nowrap d-block mb-3 p-0">
+      {currentUser.role === "FACULTY" && (
         <button
-          id="wd-publish-all-btn"
-          className="btn btn-lg btn-secondary dropdown-toggle"
-          type="button"
-          data-bs-toggle="dropdown"
+          id="wd-add-module-btn"
+          className="btn btn-lg btn-danger m-1 ms-1 float-end"
+          data-bs-toggle="modal"
+          data-bs-target="#wd-add-module-dialog"
         >
-          <GreenCheckmark />
-          Publish All
+          <FaPlus
+            className="position-relative me-2"
+            style={{ bottom: "1px" }}
+          />
+          Module
         </button>
+      )}
+      <div className="dropdown d-inline m-1 float-end">
+        <ProtectedRouteRole>
+          <button
+            id="wd-publish-all-btn"
+            className="btn btn-lg btn-secondary dropdown-toggle ms-1"
+            type="button"
+            data-bs-toggle="dropdown"
+          >
+            <FaCheckCircle
+              className="position-relative me-2"
+              style={{
+                bottom: "1px",
+                color: "green",
+                backgroundColor: "white",
+                borderRadius: "50%",
+              }}
+            />
+            Publish All
+          </button>
+        </ProtectedRouteRole>
         <ul className="dropdown-menu">
           <li>
-            <a
+            <div
               id="wd-publish-all-modules-and-items-btn"
               className="dropdown-item"
-              href="#"
             >
-              <GreenCheckmark />
+              <FaCheckCircle
+                className="position-relative me-2"
+                style={{ bottom: "1px", color: "green" }}
+              />
               Publish all modules and items
-            </a>
+            </div>
           </li>
           <li>
-            <a
-              id="wd-publish-modules-only-button"
-              className="dropdown-item"
-              href="#"
-            >
-              <GreenCheckmark />
+            <div id="wd-publish-modules-only-button" className="dropdown-item">
+              <FaCheckCircle
+                className="position-relative me-2"
+                style={{ bottom: "1px", color: "green" }}
+              />
               Publish modules only
-            </a>
+            </div>
           </li>
-          <li>
-            <a
-              id="wd-archive-all-modules-and-items"
+          <li id="wd-unpublish-all-modules-and-items">
+            <div
+              id="wd-unpublish-all-modules-and-items-button"
               className="dropdown-item"
-              href="#"
             >
-              <GreenCheckmark />
-              Archive all modules and items
-            </a>
+              <FaBan
+                className="position-relative me-2"
+                style={{ bottom: "1px" }}
+              />
+              Unpublish all modules
+            </div>
           </li>
-          <li>
-            <a
-              id="wd-archive-modules-only"
+          <li id="wd-unpublish-modules-only">
+            <div
+              id="wd-unpublish-modules-only-button"
               className="dropdown-item"
-              href="#"
             >
-              <GreenCheckmark />
-              Archive modules only
-            </a>
+              <FaBan
+                className="position-relative me-2"
+                style={{ bottom: "1px" }}
+              />
+              Unpublish modules only
+            </div>
           </li>
         </ul>
       </div>
       <button
         id="wd-view-progress"
-        className="btn btn-lg btn-info me-1 float-end"
+        className="btn btn-lg btn-secondary m-1 float-end"
       >
         View Progress
       </button>
       <button
         id="wd-collapse-all"
-        className="btn btn-lg btn-warning float-end"
+        className="btn btn-lg btn-secondary m-1 float-end"
       >
         Collapse All
       </button>
+      <ModuleEditor
+        dialogTitle="Add Module"
+        moduleName={moduleName}
+        setModuleName={setModuleName}
+        addModule={addModule}
+      />
     </div>
   );
 }

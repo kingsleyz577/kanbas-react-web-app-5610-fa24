@@ -1,5 +1,4 @@
 import { MdOutlineAccountCircle } from "react-icons/md";
-import { AiOutlineDashboard } from "react-icons/ai";
 import { IoSettings, IoSpeedometerOutline } from "react-icons/io5";
 import { LiaBookSolid } from "react-icons/lia";
 import { FaInbox, FaCalendar } from "react-icons/fa";
