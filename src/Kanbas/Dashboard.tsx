@@ -284,56 +284,35 @@ export default function Dashboard({
                       </span>
                     )}
                     {currentUser.role === "STUDENT" && enrollmentsOn && (
-                        <span>
-                          {enrollments.some(
-                            (enrollment: { user: any; course: any }) =>
-                              enrollment.user === currentUser._id &&
-                              enrollment.course === course._id
-                          ) && (
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                dispatch(
-                                  unenroll({
-                                    user: currentUser._id,
-                                    course: course._id,
-                                  })
-                                );
-                              }}
-                              className="btn btn-danger float-end"
-                              id={`unenroll-button-${course._id}`}
-                            >
-                              Unenroll
-                            </button>
-                          )}
-                          {!enrollments.some(
-                            (enrollment: { user: any; course: any }) =>
-                              enrollment.user === currentUser._id &&
-                              enrollment.course === course._id
-                          ) && (
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                dispatch(
-                                  enroll({
-                                    user: currentUser._id,
-                                    course: course._id,
-                                  })
-                                );
-                              }}
-                              className="btn btn-success float-end"
-                              id={`enroll-button-${course._id}`}
-                            >
-                              Enroll
-                            </button>
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  </Link>
-                </div>
+                      <span>
+                        {enrollments.some(
+                          (enrollment: { user: any; course: any }) =>
+                            enrollment.user === currentUser._id &&
+                            enrollment.course === course._id
+                        ) ? (
+                          <button
+                            onClick={(e) => handleUnenroll(e, course._id)}
+                            className="btn btn-danger float-end"
+                            id={`unenroll-button-${course._id}`}
+                          >
+                            Unenroll
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => handleEnroll(e, course._id)}
+                            className="btn btn-success float-end"
+                            id={`enroll-button-${course._id}`}
+                          >
+                            Enroll
+                          </button>
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </Link>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>

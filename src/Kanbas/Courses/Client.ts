@@ -39,10 +39,10 @@ export const updateCourse = async (course: any) => {
 
 export const enrollInCourse = async (courseId: string, userId: string) => {
   const response = await axios.put(`${ENROLLMENTS_API}/${courseId}/${userId}`);
-  return response.data;
+  return response.status; 
 };
 
 export const unenrollFromCourse = async (courseId: string, userId: string) => {
   const response = await axios.delete(`${ENROLLMENTS_API}/${courseId}/${userId}`);
-  return response.data;
+  return response.status; 
 };

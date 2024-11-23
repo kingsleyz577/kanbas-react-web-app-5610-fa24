@@ -24,6 +24,12 @@ interface DBCourse {
   author?: string;
 }
 
+interface Enrollment {
+  _id: string;
+  user: string;
+  course: string;
+}
+
 interface CourseFormData {
   _id: string;
   name: string;
@@ -36,21 +42,39 @@ interface CourseFormData {
 export default function Kanbas() {
   const [courses, setCourses] = useState<DBCourse[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { enrollments, enrollmentsOn } = useSelector(
+    (state: any) => state.enrollmentsReducer
+  );
   const dispatch = useDispatch();
 
   const fetchCourses = async () => {
     try {
       if (currentUser) {
-        const courses = currentUser.role === "FACULTY" 
-          ? await userClient.findMyCourses()
-          : await courseClient.fetchAllCourses();
-        setCourses(courses);
-
-        if (currentUser.role === "STUDENT") {
-          const savedEnrollments = localStorage.getItem("enrollments");
-          if (savedEnrollments) {
-            dispatch(setEnrollments(JSON.parse(savedEnrollments)));
+        if (currentUser.role === "FACULTY") {
+          const facultyCourses = await userClient.findMyCourses();
+          setCourses(facultyCourses);
+        } else if (currentUser.role === "STUDENT") {
+          const allCourses = await courseClient.fetchAllCourses();
+          
+          if (enrollmentsOn) {
+            // Show all courses when in enrollment mode
+            setCourses(allCourses);
+          } else {
+            // Show only enrolled courses
+            const enrolledCourses = allCourses.filter((course: DBCourse) =>
+              enrollments.some((enrollment: Enrollment) => 
+                enrollment.course === course._id && 
+                enrollment.user === currentUser._id
+              )
+            );
+            setCourses(enrolledCourses);
           }
+        }
+
+        // Load enrollments from localStorage if available
+        const savedEnrollments = localStorage.getItem("enrollments");
+        if (savedEnrollments) {
+          dispatch(setEnrollments(JSON.parse(savedEnrollments)));
         }
       }
     } catch (error) {
@@ -60,7 +84,7 @@ export default function Kanbas() {
   
   useEffect(() => {
     fetchCourses();
-  }, [currentUser, dispatch]);
+  }, [currentUser, enrollmentsOn, enrollments]);
 
   const initialCourse: CourseFormData = {
     _id: "0",
@@ -72,7 +96,6 @@ export default function Kanbas() {
   };
   
   const [course, setCourse] = useState<CourseFormData>(initialCourse);
-
   const addNewCourse = async () => {
     if (!course.name || !course.number || !course.startDate || !course.endDate) {
       alert("Please fill in all required fields");
