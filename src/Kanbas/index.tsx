@@ -51,7 +51,7 @@ export default function Kanbas() {
     try {
       if (currentUser) {
         if (currentUser.role === "FACULTY") {
-          const facultyCourses = await userClient.findMyCourses();
+          const facultyCourses = await userClient.findCoursesForUser(currentUser._id);
           setCourses(facultyCourses);
         } else if (currentUser.role === "STUDENT") {
           const allCourses = await courseClient.fetchAllCourses();
