@@ -17,7 +17,7 @@ export default function ModulesControls({
 
   return (
     <div id="wd-modules-controls" className="text-nowrap d-block mb-3 p-0">
-      {currentUser.role === "FACULTY" && (
+      {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") && (
         <button
           id="wd-add-module-btn"
           className="btn btn-lg btn-danger m-1 ms-1 float-end"

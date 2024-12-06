@@ -1,16 +1,24 @@
 import { useParams, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addAssignment, updateAssignment } from "./reducer";
-import { useState } from "react";
-import * as client from "./client";
+import { addAssignment, updateAssignment, setAssignments } from "./reducer";
+import { useEffect, useState } from "react";
+import * as coursesClient from "../Client";
+import * as assignmentsClient from "./client";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  
+  const fetchAssignments = async () => {
+    const assignments = await coursesClient.findAssignmentsForCourse(
+      cid as string
+    );
+    dispatch(setAssignments(assignments));
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
   const [assignment, setAssignment] = useState(
     assignments.find(
       (assignment: { _id: string | undefined }) => assignment._id === aid
@@ -25,22 +33,20 @@ export default function AssignmentEditor() {
       available_until_date: "",
     }
   );
-
-  const handleSave = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    try {
-      if (assignment._id) {
-        const updatedAssignment = await client.updateAssignment(assignment._id, assignment);
-        dispatch(updateAssignment(updatedAssignment));
-      } else {
-        const newAssignment = await client.createAssignment(assignment);
-        dispatch(addAssignment(newAssignment));
-      }
-      navigate(`/Kanbas/Courses/${cid}/Assignments`);
-    } catch (error) {
-      console.error("Error saving assignment:", error);
-      alert("Failed to save assignment");
+  const navigate = useNavigate();
+  const save = async () => {
+    if (assignment._id) {
+      await assignmentsClient.updateAssignment(assignment);
+      dispatch(updateAssignment(assignment));
+    } else {
+      if (!cid) return;
+      const newAssignment = await coursesClient.createAssignmentForCourse(
+        cid,
+        assignment
+      );
+      dispatch(addAssignment(newAssignment));
     }
+    navigate(`/Kanbas/Courses/${cid}/Assignments`);
   };
 
   return (
@@ -310,7 +316,7 @@ export default function AssignmentEditor() {
         <button
           id="wd-assignment-save"
           className="btn btn-lg btn-danger me-1 float-end"
-          onClick={handleSave}
+          onClick={save}
         >
           Save
         </button>

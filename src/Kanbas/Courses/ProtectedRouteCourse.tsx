@@ -7,10 +7,7 @@ export default function ProtectedRouteCourse({ children }: { children: any }) {
 
   if (
     currentUser &&
-    enrollments.some(
-      (enrollment: { user: any; course: any }) =>
-        enrollment.user === currentUser._id && enrollment.course === cid
-    )
+    true
   ) {
     return children;
   } else {

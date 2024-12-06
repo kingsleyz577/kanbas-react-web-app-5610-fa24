@@ -18,7 +18,7 @@ export default function LessonControlButtons({
 
   return (
     <div className="float-end d-flex">
-      {currentUser.role === "FACULTY" && (
+      {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") && (
         <FaTrash
           data-bs-toggle="modal"
           data-bs-target="#wd-add-module-dialog"

@@ -18,7 +18,7 @@ export default function LessonControlButtons({
 
   return (
     <div className="float-end">
-      {currentUser.role === "FACULTY" && (
+      {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") && (
         <span>
           <FaPencil
             onClick={() => editModule(moduleId)}

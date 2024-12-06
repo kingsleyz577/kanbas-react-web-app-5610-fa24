@@ -28,7 +28,7 @@ export default function AssignmentsControls() {
             Group
           </button>
         </ProtectedRouteRole>
-        {currentUser.role === "FACULTY" && (
+        {(currentUser.role === "FACULTY" || currentUser.role === "ADMIN") && (
           <a
             href={`#/Kanbas/Courses/${cid}/Assignments/New`}
             className="btn btn-lg btn-danger  me-2 mb-2 float-end col text-nowrap"
